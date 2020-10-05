@@ -1,14 +1,26 @@
-# Getting User Timeline through entry of twitter handle 
-# Using Python-Twitter https://github.com/twitterdev/search-tweets-python
-
+#Poras Shroff 2020 
+#DataFraming from LucidProgramming https://www.youtube.com/watch?v=WX0MDddgpA4
+#Twitter API library from https://github.com/bear/python-twitter
 import twitter
+import requests
+from google.cloud import language
+from google.cloud.language import enums, types
+import pandas #for data framing
+
+
+
+
+r=requests.get('https://cloud.google.com/natural-language/docs/reference/rest/v1/documents/analyzeSentiment#http-request')
+
+
+
 from searchtweets import collect_results
 
 
-consumer_key = '<Enter Here>'
-consumer_secret = '<Enter Here>'
-access_token = '<Enter Here>'
-access_secret = '<Enter Here>'
+consumer_key = 'Enter Here'
+consumer_secret = 'Enter Here'
+access_token = 'Enter Here'
+access_secret = 'Enter Here'
 
 
 # Authenticate to Twitter
@@ -17,37 +29,59 @@ api = twitter.Api(consumer_key=consumer_key,
                   access_token_key=access_token,
                   access_token_secret=access_secret)
 
+#Authentication to Google NLP
+from gcloud.aio.auth import IamClient
+from gcloud.rest.auth import Token
+client = IamClient()
+pubkeys = await client.list_public_keys()
+token = Token()
+print(token.get())
+print("-----------------")
+
 
 (api.VerifyCredentials())
 
-#GetUserTimeline
-x = 0
-print("Enter Twitter Handle:   ")
+#Sentiment Function
+def analyze_text_sentiment(text):
+    client = language.LanguageServiceClient()
+    document = types.Document(
+        content=text,
+        type=enums.Document.Type.PLAIN_TEXT)
 
-user=api.GetUserTimeline(
-                         user_id= None,
-                         screen_name= input(x),
-                         max_id=None,
-                         count=None,
-                         include_rts=True,
-                         trim_user=False,
-                         exclude_replies=False)
-print("User TimeLine:   ", user)
-print("---------------------------------------------------")
+    response = client.analyze_sentiment(document=document)
+
+    sentiment = response.document_sentiment
+    results = [
+        ('text', text),
+        ('score', sentiment.score),
+        ('magnitude', sentiment.magnitude),
+    ]
+    for k, v in results:
+        print('{:10}: {}'.format(k, v))
+
+#Json tweet to data frame function
+def tweets_to_data_frame(self,tweets):
+    df = pd.DataFrame(data=[tweet.text for tweet in tweets], columns=['Tweets'])
+    return df
+
+
 
 #GetCurrentTrends
 gtrends=api.GetTrendsCurrent(exclude=None)
 print("Current Global Trends:  " ,gtrends)
 print("---------------------------------------------------")
 
-#TopTrendsinBoston (or any WOEID entry)
-#LINK for WOEID: https://gist.githubusercontent.com/lukemelia/353493/raw/98749866fce79b591e45fb3325c853b4306a8882/WOEIDs%2520for%2520US%2520Cities%2520with%2520population%2520over%2520100K%2520as%2520of%25202008%2520(from%2520Wikipedia)
-woeid = 0
-print("ENTER WOEID OF CITY:   ",)
-input(woeid)
-if woeid == 0:
-    woeid= 2367105
-atrend=api.GetTrendsWoeid(woeid,exclude=None)
-print("TOP TRENDING IN WOEID CITY:   ", atrend)
+#data framing
+df = tweets_to_data_frame(gtrends)
 
-print("---------------------------------------------------")
+#Sentiment of GetCurrentTrends from the data framing
+analyze_text_sentiment(df)
+
+
+
+
+
+
+
+
+
