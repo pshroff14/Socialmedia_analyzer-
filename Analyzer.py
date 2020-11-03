@@ -12,10 +12,10 @@ from google.cloud import language_v1
 # from google.cloud import types
 # from searchtweets import collect_results
 
-consumer_key = 'KZczaCiFdUlLJkmautw7YGxf8'
-consumer_secret = 'qyNgBrYrX0YC6qfHg4QDRENKNcAZQ6k47HCZEID1QKhlpOUeOW'
-access_token = '1292600738456248326-DzFIuKrFAZGjYCXJcJx5Z9qF22dkAW'
-access_secret = 'cvbj6jWExK7QUlunhmmz6mUJpfxs5awtSVr0vhxC6riwM'
+consumer_key = ''
+consumer_secret = ''
+access_token = ''
+access_secret = ''
 
 # Authenticate to Twitter
 api = twitter.Api(consumer_key=consumer_key,
@@ -27,7 +27,7 @@ api = twitter.Api(consumer_key=consumer_key,
 import google.oauth2.credentials
 
 credentials = google.oauth2.credentials.Credentials(
-    'bPU6i9SaTJeOBn23ogPaG9ok')
+    '')
 
 
 # Get Trending Tweets from Specific Location Based on WOEID
