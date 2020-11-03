@@ -39,7 +39,7 @@ def trend_location(woeid=0):
     # print(tweet)
     return tweet
 
-
+#Temp function to examine my testing file 
 def add(num):
     result = 1 + num
     return result
