@@ -1,3 +1,4 @@
+import tweepy
 import unittest
 from Analyzer import *
 
@@ -12,6 +13,17 @@ class TestTwit(unittest.TestCase):
 
     # def test_auth(self):
     #     self.assertEqual()
+
+    def test_error(self):
+        import pickle
+        from tweepy.error import TweepError
+
+        e = TweepError('no reason', {'status': 200})
+        e2 = pickle.loads(pickle.dumps(e))
+
+        self.assertEqual(e.reason, e2.reason)
+        self.assertEqual(e.response, e2.response)
+        
 
 # This test see's if the list of strings of the GettrendsWoeid is the same as the function itself
     def test_woe(self):
